@@ -39,8 +39,8 @@ function renderTrainer(trainer) {
         .then(response => response.json())
         .then(json => renderPokemonLi(json));
     } else {
-      // show error
-      alert("too many pokemon");
+      // show error modal
+      showErrorModal();
     }
   });
 
@@ -49,6 +49,20 @@ function renderTrainer(trainer) {
   card.appendChild(pokeList);
   document.querySelector("main").appendChild(card);
   getPokemons(trainer);
+}
+
+function showErrorModal() {
+  let modal = document.getElementById("myModal");
+  let span = document.getElementsByClassName("close")[0];
+  modal.style.display = "block";
+  span.onclick = function() {
+    modal.style.display = "none";
+  };
+  window.onclick = function(e) {
+    if (e.target == modal) {
+      modal.style.display = "none";
+    }
+  };
 }
 
 function getPokemons(trainer) {
