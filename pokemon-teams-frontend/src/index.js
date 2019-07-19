@@ -26,12 +26,27 @@ function renderTrainer(trainer){
   card.appendChild(addPokeButton);
   card.appendChild(pokeList);
   document.querySelector('main').appendChild(card);
-  getPokemons(pokeList, trainer)
+  getPokemons(trainer)
 }
 
-function getPokemons(pokeList, trainer) {
+function getPokemons(trainer) {
   fetch(TRAINERS_URL + `/${trainer.id}`).then(response => response.json()).then(json => {
-    renderPokemon(json[1].pokemons)
+    renderPokemon(json)
   })
 }
 
+function renderPokemon(trainer){
+  let trainerId = '[data-id="' + trainer[0].trainer.id + '"]'
+  let card = document.querySelector(`${trainerId}`)
+  let list = card.querySelector('ul')
+  trainer[1].pokemons.forEach(pokemon => {
+    let li = document.createElement('li');
+    li.innerText = `${pokemon.nickname} (${pokemon.species})`;
+    list.appendChild(li)
+    let releaseButton = document.createElement('button');
+    releaseButton.className = 'release';
+    releaseButton.setAttribute('data-pokemon-id', pokemon.id)
+    releaseButton.innerText = 'Release!'
+    li.appendChild(releaseButton);
+  });
+}
