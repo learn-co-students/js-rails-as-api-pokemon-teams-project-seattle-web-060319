@@ -8,10 +8,22 @@
   <body>
     <header>
       <h2>Pokemon Teams!</h2>
+
     </header>
 
     <main>
       <!-- Add our Pokemon -->
+      <div id="my-modal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p id="error"> </p>
+          <form id="create-pokemon-form">
+            <input type="text" placeholder="species">
+            <input type="text" placeholder="nickname">
+            <input type="submit" id="myBtn" "Create Pokemon">
+          </form>
+        </div>
+      </div>
     </main>
 
     <script src="./src/index.js"></script>
