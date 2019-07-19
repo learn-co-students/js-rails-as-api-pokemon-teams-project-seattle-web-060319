@@ -25,8 +25,23 @@ function renderTrainer(trainer) {
 
   //add pokemon button event listener
   addPokeButton.addEventListener("click", function(e) {
-    console.log(e);
-    // target.parentNode.attributes[1].nodeValue
+    if (e.target.parentNode.querySelectorAll("li").length < 6) {
+      return fetch(POKEMONS_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify({
+          trainerId: e.target.parentNode.attributes[1].nodeValue
+        })
+      })
+        .then(response => response.json())
+        .then(json => renderPokemonLi(json));
+    } else {
+      // show error
+      alert("too many pokemon");
+    }
   });
 
   let pokeList = document.createElement("ul");
@@ -45,27 +60,31 @@ function getPokemons(trainer) {
 }
 
 function renderPokemon(trainer) {
-  let trainerId = '[data-id="' + trainer[0].trainer.id + '"]';
+  trainer[1].pokemons.forEach(pokemon => {
+    renderPokemonLi(pokemon);
+  });
+}
+
+function renderPokemonLi(pokemon) {
+  let trainerId = '[data-id="' + pokemon.trainer_id + '"]';
   let card = document.querySelector(`${trainerId}`);
   let list = card.querySelector("ul");
-  trainer[1].pokemons.forEach(pokemon => {
-    let li = document.createElement("li");
-    li.innerText = `${pokemon.nickname} (${pokemon.species})`;
-    list.appendChild(li);
-    let releaseButton = document.createElement("button");
-    releaseButton.className = "release";
-    releaseButton.setAttribute("data-pokemon-id", pokemon.id);
-    releaseButton.innerText = "Release!";
-    li.appendChild(releaseButton);
+  let li = document.createElement("li");
+  li.innerText = `${pokemon.nickname} (${pokemon.species})`;
+  list.appendChild(li);
+  let releaseButton = document.createElement("button");
+  releaseButton.className = "release";
+  releaseButton.setAttribute("data-pokemon-id", pokemon.id);
+  releaseButton.innerText = "Release!";
+  li.appendChild(releaseButton);
 
-    // adding the event listener to the release button
-    releaseButton.addEventListener("click", function(e) {
-      return fetch(
-        POKEMONS_URL + `/${e.target.attributes["data-pokemon-id"].nodeValue}`,
-        { method: "DELETE" }
-      )
-        .then(response => response.json)
-        .then(() => li.remove());
-    });
+  // adding the event listener to the release button
+  releaseButton.addEventListener("click", function(e) {
+    return fetch(
+      POKEMONS_URL + `/${e.target.attributes["data-pokemon-id"].nodeValue}`,
+      { method: "DELETE" }
+    )
+      .then(response => response.json)
+      .then(() => li.remove());
   });
 }
